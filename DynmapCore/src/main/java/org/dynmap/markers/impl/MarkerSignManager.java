@@ -32,9 +32,16 @@ public class MarkerSignManager {
     private static class SignListener implements DynmapListenerManager.SignChangeEventListener, Runnable {
         @Override
         public void signChangeEvent(int blkid, String wname, int x, int y, int z, String[] lines, DynmapPlayer p) {
+            /* This bit adds the capability to get the last character of a sign and to check it */
+            String full_text = lines[0] + lines[1] + lines[2] + lines[3];
+            boolean last_is_blank = false;
+            if ((full_text != "" && full_text.trim() != "") && (full_text.lastIndexOf(" ") == full_text.length() - 1)) {
+                last_is_blank = true;
+            }
+
             if(mgr == null)
                 return;
-            if(!lines[0].equalsIgnoreCase("[dynmap]")) {  /* If not dynmap sign, quit */
+            if(!lines[0].equalsIgnoreCase("[dynmap]") && !last_is_blank) {  /* If not dynmap sign, quit */
                 return;
             }
             /* If allowed to do marker signs */
@@ -43,8 +50,10 @@ public class MarkerSignManager {
                 String set = defSignSet;
                 String icon = MarkerIcon.SIGN;
                 String label = "";
-                lines[0] = ""; /* Blank out [dynmap] */
-                for(int i = 1; i < 4; i++) {    /* Check other lines for icon: or set: */
+                if (lines[0].equalsIgnoreCase("[dynmap]")) {
+                    lines[0] = ""; /* Blank out [dynmap] */
+                }
+                for(int i = 0; i < 4; i++) {    /* Check other lines for icon: or set: */
                     String v = plugin.getServer().stripChatColor(lines[i]);
                     if(v.startsWith("icon:")) { /* icon: */
                         icon = v.substring(5);
