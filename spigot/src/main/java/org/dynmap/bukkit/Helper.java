@@ -32,7 +32,7 @@ public class Helper {
                 Log.info("Loading Glowstone support");
                 BukkitVersionHelper.helper = new BukkitVersionHelperGlowstone();
             }
-            else if (v.contains("(MC: 1.13.1)")) {
+            else if (v.contains("(MC: 1.13.1)") || v.contains("(MC: 1.13.2)")) {
                 BukkitVersionHelper.helper = new BukkitVersionHelperSpigot113_1();
             }
             else if (v.contains("(MC: 1.13)")) {
